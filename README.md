@@ -2,6 +2,24 @@
 
 A responsive web chat built with **FastAPI**, **Bootstrap 5**, and an **MVC** structure. It retrieves library policies from `knowledge_base.json` and generates concise answers with Groq. If the available knowledge base does not cover a question, the assistant says so.
 
+## Interface
+
+Desktop at 1280×800, with the sidebar and suggestion cards:
+
+![Desktop library chat at 1280 by 800](code/features/20260924-biblioteca-chat-web/4-implementation/artifacts/desktop-1280x800.png)
+
+The same desktop width after pressing Enter. The question stays in the thread and the assistant shows the searching state:
+
+![Desktop chat after pressing Enter](code/features/20260924-biblioteca-chat-web/4-implementation/artifacts/desktop-after-enter.png)
+
+Mobile at 390×844. The sidebar is hidden, suggestions stack in one column, and the header shows the new-conversation control:
+
+![Mobile library chat at 390 by 844](code/features/20260924-biblioteca-chat-web/4-implementation/artifacts/mobile-390x844.png)
+
+The same mobile width after tapping a suggestion card:
+
+![Mobile chat after tapping a suggestion](code/features/20260924-biblioteca-chat-web/4-implementation/artifacts/mobile-after-tap.png)
+
 ## MVC Structure
 
 - `app/models/`: message schemas and assistant logic (RAG retrieval and response generation).
@@ -58,7 +76,7 @@ The current web app combines policy retrieval with Groq generation. It does not 
 
 ## SDD Specifications
 
-The implementation is documented in [code/wip/20260924-biblioteca-chat-web](code/wip/20260924-biblioteca-chat-web/): functional and technical specifications, task plan, implementation progress, and file map. The HTTP integration suite passes; live provider response and browser rendering checks remain pending.
+The implementation is documented in [code/features/20260924-biblioteca-chat-web](code/features/20260924-biblioteca-chat-web/): functional and technical specifications, task plan, implementation progress, and file map. The layout screenshots above are the desktop and mobile checks from that package.
 
 ## Project Documentation
 
