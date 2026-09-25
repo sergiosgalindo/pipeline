@@ -39,25 +39,25 @@ flowchart LR
 ```mermaid
 sequenceDiagram
     actor User
-    participant UI as Browser UI (web/app.js)
+    participant UI as Browser UI
     participant API as FastAPI chat controller
     participant Assistant as Assistant model
-    participant KB as knowledge_base.json
+    participant KB as "knowledge_base.json"
     participant Embed as Sentence Transformers
     participant Groq as Groq API
 
     User->>UI: Submit question
-    UI->>UI: Show "Searching policies" status
-    UI->>API: POST /api/chat (message, history)
+    UI->>UI: Show searching status
+    UI->>API: POST /api/chat with message and history
     API->>API: Validate ChatRequest
-    API->>Assistant: answer_question(payload)
+    API->>Assistant: Call answer_question
     Assistant->>KB: Load policy entries
     KB-->>Assistant: Policy titles and text
-    Assistant->>Embed: Encode policies (cached) and question
+    Assistant->>Embed: Encode cached policies and question
     Embed-->>Assistant: Normalized vectors
-    Assistant->>Assistant: Rank cosine similarity; keep up to 3 above threshold
+    Assistant->>Assistant: Rank by cosine similarity, keep up to 3 above threshold
     alt Relevant policies found
-        Assistant->>Groq: Prompt + relevant policy context + recent history
+        Assistant->>Groq: Send prompt, policy context, and recent history
         Groq-->>Assistant: Grounded answer
     else No relevant policies found
         Assistant->>Assistant: Return fixed out-of-scope answer

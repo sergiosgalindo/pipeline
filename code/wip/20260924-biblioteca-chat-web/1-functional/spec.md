@@ -1,6 +1,6 @@
 # Functional Specification
 
-Status: updated; semantic embedding retrieval is now required
+Status: aligned with the current 26-policy corpus and embedding retrieval
 
 ## Problem
 
@@ -8,7 +8,7 @@ Library users need a simple conversational way to ask about library policies. Th
 
 ## Users
 
-- **Visitor:** asks about loans, renewals, fines, and reserve materials on desktop or mobile.
+- **Visitor:** asks about the configured library policies on desktop or mobile, including loans, fines, hours, rooms, access, and the other topics in the knowledge base.
 - **Content owner:** updates the knowledge base policies.
 - **Operator/developer:** configures the Groq API key and starts the service.
 
@@ -31,7 +31,7 @@ Library users need a simple conversational way to ask about library policies. Th
 - Requests outside the available knowledge receive an abstention response.
 - The Groq key is read from the server environment and is not included in normal HTTP responses or client assets.
 - Message and history lengths are validated; configuration and provider errors produce understandable HTTP errors.
-- The browser sends no more than the 12 history messages accepted by the API. **Gap:** the current browser code sends its full in-memory history; see TASK-008.
+- The browser sends no more than the latest 12 history messages accepted by the API. The on-screen conversation can be longer; only the request payload is capped.
 - The application can be built and run as a container, with the provider key supplied at runtime and excluded from the image.
 - `GET /api/health` reports basic service status and whether the key is configured.
 

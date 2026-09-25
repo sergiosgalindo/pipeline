@@ -4,6 +4,8 @@ This directory contains the project guide, architecture diagrams, API reference,
 
 ## Contents
 
+Open [index.html](index.html) to read this guide in the browser, including the Mermaid diagrams.
+
 - [Project overview and architecture](architecture.md)
 - [HTTP API reference](api.md)
 - [OpenAPI specification](openapi.yaml)

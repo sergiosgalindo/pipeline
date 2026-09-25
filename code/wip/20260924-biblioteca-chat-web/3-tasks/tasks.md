@@ -1,6 +1,6 @@
 # Development Plan
 
-Status: multilingual embedding retrieval implemented and evaluated; provider-backed and browser verification pending
+Status: specs aligned with the 26-policy corpus and title-plus-text embeddings; provider-backed and browser verification pending
 
 This plan was written in brownfield mode after the first version had been built. Completed tasks describe what is already present in the working tree; pending tasks are work that remains unverified or unimplemented.
 
@@ -34,7 +34,7 @@ This plan was written in brownfield mode after the first version had been built.
   - Depends on: TASK-001, TASK-002
   - Deliverable: configurable Sentence Transformers embeddings, cached policy vectors, cosine similarity ranking, and a relevance threshold.
   - Validate: deterministic integration tests pass; representative Spanish paraphrases retrieve the expected policy and an out-of-corpus question is declined with the configured model.
-- [ ] TASK-008: Cap the browser-submitted chat history at the API limit.
+- [x] TASK-008: Cap the browser-submitted chat history at the API limit.
   - Depends on: TASK-003
   - Deliverable: send no more than the latest 12 history messages from `web/app.js`, matching `ChatRequest` validation.
   - Validate: continue a conversation past seven exchanges; requests remain accepted and the newest context is retained.

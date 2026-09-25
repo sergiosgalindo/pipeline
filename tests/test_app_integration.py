@@ -1,6 +1,8 @@
 """HTTP integration tests for the FastAPI application and assistant pipeline."""
 
 import json
+import subprocess
+from pathlib import Path
 from typing import Any, Iterator
 
 from fastapi.testclient import TestClient
@@ -165,6 +167,66 @@ def test_chat_validation_and_provider_failure_are_reported(
     assert invalid.status_code == 422
     assert provider_error.status_code == 502
     assert "conectar con Groq" in provider_error.json()["detail"]
+
+
+def test_browser_submits_only_the_newest_twelve_history_messages() -> None:
+    """Seven completed exchanges store 14 messages; the next request must keep the newest 12."""
+    script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const code = fs.readFileSync('web/app.js', 'utf8');
+const sandbox = {};
+vm.runInNewContext(code, sandbox);
+const items = [];
+for (let exchange = 1; exchange <= 7; exchange += 1) {
+  items.push({ role: 'user', content: `q${exchange}` });
+  items.push({ role: 'assistant', content: `a${exchange}` });
+}
+const sent = sandbox.submittedHistory(items);
+if (sent.length !== 12) throw new Error(`expected 12 messages, got ${sent.length}`);
+if (sent[0].content !== 'q2' || sent[sent.length - 1].content !== 'a7') {
+  throw new Error(`newest context was not retained: ${sent.map((item) => item.content).join(',')}`);
+}
+if (items[0].content !== 'q1' || items.length !== 14) {
+  throw new Error('capping the request must not drop messages from the local conversation');
+}
+"""
+    result = subprocess.run(
+        ["node", "-e", script],
+        cwd=Path(__file__).resolve().parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def test_api_accepts_twelve_history_messages_and_rejects_thirteen(
+    monkeypatch: Any, fake_embeddings: None
+) -> None:
+    monkeypatch.setenv("GROQ_API_KEY", "integration-test-key")
+    monkeypatch.setattr(
+        assistant.urllib.request,
+        "urlopen",
+        lambda *args, **kwargs: FakeGroqResponse("El préstamo dura hasta 15 días."),
+    )
+    accepted_history = [
+        {"role": "user" if index % 2 == 0 else "assistant", "content": f"m{index}"}
+        for index in range(12)
+    ]
+
+    with TestClient(app) as client:
+        accepted = client.post("/api/chat", json={
+            "message": "¿Cuántos días dura el préstamo?",
+            "history": accepted_history,
+        })
+        rejected = client.post("/api/chat", json={
+            "message": "¿Cuántos días dura el préstamo?",
+            "history": accepted_history + [{"role": "user", "content": "m12"}],
+        })
+
+    assert accepted.status_code == 200
+    assert rejected.status_code == 422
 
 
 def test_health_reports_provider_configuration(monkeypatch: Any) -> None:

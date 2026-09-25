@@ -13,6 +13,7 @@ Status: multilingual embedding retrieval implemented and evaluated with the conf
 - Python syntax compilation and JavaScript syntax check completed successfully.
 - Brownfield SDD feature package with functional/technical specifications, task plan, progress, and implementation map.
 - Functional and technical specs reviewed against the code; browser/API history limit mismatch recorded as TASK-008.
+- TASK-008 caps the chat request at the newest 12 history messages. The browser keeps the full conversation on screen.
 - HTTP integration suite covers page/static assets, health configuration, end-to-end API-to-RAG-to-generation flow with a fake Groq response, out-of-scope abstention, request validation, and provider timeout handling.
 - Development dependencies are isolated in `requirements-dev.txt`; test execution instructions are documented in the README.
 - Lexical retrieval is replaced by cached Sentence Transformers embeddings and cosine similarity. The model name and relevance threshold are configurable through `EMBEDDING_MODEL` and `EMBEDDING_MIN_SIMILARITY`.
@@ -24,7 +25,6 @@ Status: multilingual embedding retrieval implemented and evaluated with the conf
 
 - TASK-005 live provider response remains unverified because Groq previously returned HTTP 403.
 - TASK-006 browser rendering and interactive desktop/mobile checks remain pending.
-- TASK-008 browser/server history limit mismatch remains queued.
 - TASK-009 container build/runtime verification remains pending.
 
 ## Blocked
@@ -36,7 +36,7 @@ Status: multilingual embedding retrieval implemented and evaluated with the conf
 - `PYTHONPYCACHEPREFIX=/tmp/pipeline_pycache python3 -m py_compile app/main.py app/models/assistant.py app/models/schemas.py app/controllers/chat_controller.py` — passed.
 - `node --check web/app.js` — passed.
 - HTTP integration suite uses FastAPI `TestClient`; embedding and Groq calls are mocked so tests require no model download, live key, or provider access.
-- `.venv/bin/python -m pytest -q` — passed (6 tests) after replacing lexical retrieval with embedding similarity.
+- `.venv/bin/python -m pytest -q` — passed (8 tests), including the browser cap after seven exchanges and API acceptance of 12 history messages.
 - `PYTHONPYCACHEPREFIX=/tmp/pipeline_pycache .venv/bin/python -m py_compile ...` — passed for the application and integration-test modules.
 - `git diff --check` — passed.
 - Offline evaluation with the cached Sentence Transformer — passed for paraphrases about loans, late returns, and reserve books; an unrelated Mars-weather question returned no sources.

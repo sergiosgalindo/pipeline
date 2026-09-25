@@ -12,6 +12,11 @@ Change types: **Added**, **Changed**, **Fixed**, **Removed**.
 
 - Policies for the catalog, title requests, theses, laptop loans, reference help, accessibility, and conduct. `knowledge_base.json` now has 26 policies, each covering a single topic.
 
+#### Fixed
+
+- The chat request now sends at most the latest 12 history messages, matching the API limit. Longer conversations stay on screen, and the oldest turns are left out of the next request.
+- `docs/index.html`, a single page that renders the project guides and the Mermaid architecture diagrams.
+
 #### Changed
 
 - The knowledge base grew from 3 short rules (loans, fines, and reserve materials) to a policy set that also covers hours, credentials, loan limits, holds, returns, loss or damage, study rooms, carrels, computers, Wi-Fi, noise and food, lockers, electronic resources, interlibrary loan, visitors, photocopying, and the topics above.
