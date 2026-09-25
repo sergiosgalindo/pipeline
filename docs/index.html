@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library Assistant Documentation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7f6;
+      --paper: #ffffff;
+      --ink: #1c2b28;
+      --muted: #5d726c;
+      --line: #d7e4e0;
+      --mint: #0f8f78;
+      --mint-soft: #e7f6f2;
+      --code: #10211d;
+      --sidebar: 240px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.6 "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 24px;
+      background: #10211d;
+      color: #f3fbf8;
+    }
+    .topbar strong { font-size: 15px; letter-spacing: .02em; }
+    .topbar span { color: #b7cdc6; font-size: 13px; }
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: calc(100vh - 52px);
+    }
+    nav {
+      position: sticky;
+      top: 52px;
+      align-self: start;
+      max-height: calc(100vh - 52px);
+      overflow: auto;
+      padding: 22px 16px;
+      border-right: 1px solid var(--line);
+      background: #fbfefd;
+    }
+    nav a {
+      display: block;
+      margin: 2px 0;
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    nav a:hover, nav a.active { background: var(--mint-soft); color: var(--mint); }
+    main { padding: 28px 8vw 64px; max-width: 980px; }
+    article {
+      margin: 0 0 28px;
+      padding: 8px 28px 12px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { font-size: 2rem; margin-top: 1.2rem; }
+    h2 { font-size: 1.35rem; margin-top: 2rem; padding-top: .4rem; border-top: 1px solid var(--line); }
+    article > h1:first-child, article h1:first-of-type { border: 0; }
+    a { color: var(--mint); }
+    p, li { color: #243632; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .9em;
+      background: var(--mint-soft);
+      padding: .1em .35em;
+      border-radius: 4px;
+    }
+    pre {
+      overflow: auto;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--code);
+      color: #e7f6f1;
+    }
+    pre code { background: transparent; color: inherit; padding: 0; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.4rem; font-size: 14px; }
+    th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+    th { background: #f3faf8; }
+    .diagram {
+      margin: 1rem 0 1.4rem;
+      padding: 12px;
+      overflow: auto;
+      background: #f8fbfa;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .diagram .mermaid { background: transparent; }
+    .footnote { margin-top: 8px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      nav { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); }
+      main { padding: 16px 16px 48px; }
+      article { padding: 4px 16px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <strong>Library Assistant</strong>
+    <span>Project documentation</span>
+  </header>
+  <div class="layout">
+    <nav id="nav" aria-label="Documentation sections"></nav>
+    <main>
+      <div id="content"></div>
+      <p class="footnote">Diagrams are drawn with Mermaid. OpenAPI remains in <a href="openapi.yaml">openapi.yaml</a>.</p>
+    </main>
+  </div>
+<script type="text/markdown" data-id="overview" data-title="Overview">
+# Library Assistant Documentation
+
+This directory contains the project guide, architecture diagrams, API reference, setup instructions, retrieval notes, and verification guidance. The documentation describes the current implementation in this repository.
+
+## Contents
+
+Open [index.html](index.html) to read this guide in the browser, including the Mermaid diagrams.
+
+- [Project overview and architecture](architecture.md)
+- [HTTP API reference](api.md)
+- [OpenAPI specification](openapi.yaml)
+- [Local and Docker setup](setup-and-deployment.md)
+- [Knowledge base and RAG](rag-and-knowledge-base.md)
+- [Testing, troubleshooting, and security](testing-and-troubleshooting.md)
+- [MVC implementation map](implementation-map.md)
+
+## Interactive API explorer
+
+When the application is running, FastAPI serves Swagger UI at `http://127.0.0.1:8000/docs`, ReDoc at `http://127.0.0.1:8000/redoc`, and its generated OpenAPI JSON at `http://127.0.0.1:8000/openapi.json`. The checked-in [OpenAPI YAML](openapi.yaml) provides a readable API contract for clients and tools.
+
+## Project summary
+
+The application is a responsive Bootstrap 5 web chat served by FastAPI. It retrieves the most relevant library policies using multilingual Sentence Transformers embeddings, then asks Groq to produce a concise grounded answer. Policy data is stored in `knowledge_base.json`. The app uses an MVC-inspired structure: FastAPI routes are controllers, Pydantic schemas and RAG/provider logic are models, and `web/` contains the view and browser behavior.
+
+The current web app uses RAG and Groq generation. It does not load or serve the LoRA adapter from the training notebook. The notebook is educational/reference material; the deployable web application is implemented separately.
+
+## SDD records
+
+The feature workspace contains the functional and technical specifications, task plan, progress, and implementation map: [`code/wip/20260924-biblioteca-chat-web/`](../code/wip/20260924-biblioteca-chat-web/).
+</script>
+<script type="text/markdown" data-id="architecture" data-title="Architecture">
+# Architecture
+
+## Components
+
+```mermaid
+flowchart LR
+    Browser[Browser: Bootstrap UI]
+    JS[web/app.js]
+    Routes[FastAPI controllers]
+    Schemas[Pydantic request/response models]
+    Assistant[Assistant model: orchestration]
+    KB[(knowledge_base.json)]
+    Embeddings[Sentence Transformers model]
+    Groq[Groq Chat Completions API]
+
+    Browser --> JS
+    JS -->|POST /api/chat| Routes
+    Routes --> Schemas
+    Routes --> Assistant
+    Assistant --> KB
+    Assistant --> Embeddings
+    Assistant -->|question + retrieved context| Groq
+    Groq --> Assistant
+    Assistant --> Routes
+    Routes -->|answer + source titles| JS
+```
+
+## MVC mapping
+
+| MVC concern | Project location | Responsibility |
+| --- | --- | --- |
+| Model | `app/models/` | Pydantic API schemas and assistant behavior: load policies, retrieve by embeddings, call Groq, format sources. |
+| Controller | `app/controllers/` | Validate and route health/chat HTTP requests, translate assistant failures to HTTP errors. |
+| View | `web/` | Responsive chat page, Bootstrap-based layout, styling, browser-side conversation and API calls. |
+| Application composition | `app/main.py` | Creates FastAPI app, mounts static assets, includes routes, serves the home page. |
+
+## Chat request sequence
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as Browser UI
+    participant API as FastAPI chat controller
+    participant Assistant as Assistant model
+    participant KB as "knowledge_base.json"
+    participant Embed as Sentence Transformers
+    participant Groq as Groq API
+
+    User->>UI: Submit question
+    UI->>UI: Show searching status
+    UI->>API: POST /api/chat with message and history
+    API->>API: Validate ChatRequest
+    API->>Assistant: Call answer_question
+    Assistant->>KB: Load policy entries
+    KB-->>Assistant: Policy titles and text
+    Assistant->>Embed: Encode cached policies and question
+    Embed-->>Assistant: Normalized vectors
+    Assistant->>Assistant: Rank by cosine similarity, keep up to 3 above threshold
+    alt Relevant policies found
+        Assistant->>Groq: Send prompt, policy context, and recent history
+        Groq-->>Assistant: Grounded answer
+    else No relevant policies found
+        Assistant->>Assistant: Return fixed out-of-scope answer
+    end
+    Assistant-->>API: Answer and source titles
+    API-->>UI: JSON response
+    UI->>UI: Replace pending status with answer and sources
+```
+
+## Request flow
+
+```mermaid
+flowchart TD
+    A[User submits a question] --> B[Browser sends POST /api/chat]
+    B --> C{Valid request?}
+    C -- No --> D[FastAPI returns 422 validation detail]
+    C -- Yes --> E[Read knowledge_base.json]
+    E --> F[Load cached embedding model]
+    F --> G[Embed corpus if cache is stale]
+    G --> H[Embed question and rank by cosine similarity]
+    H --> I{Any policy meets threshold?}
+    I -- No --> J[Return out-of-scope answer and empty sources]
+    I -- Yes --> K[Build grounded prompt with context and history]
+    K --> L[Call Groq]
+    L --> M{Provider response}
+    M -- Success --> N[Return answer and source titles]
+    M -- Error --> O[Return HTTP 502 with provider failure detail]
+    J --> P[Browser renders answer]
+    N --> P
+    D --> Q[Browser renders request error]
+    O --> Q
+```
+
+## Runtime and caching
+
+- Sentence Transformer weights are loaded lazily and the model object is cached in the process.
+- Policy vectors are cached in memory and rebuilt when the embedding model name or policy corpus changes.
+- The first use needs the model files locally or outbound access to the Hugging Face Hub. The public default model does not require `HF_TOKEN`.
+- Generation uses Groq's OpenAI-compatible Chat Completions endpoint. The secret key stays on the server and is not passed to browser JavaScript.
+- Docker sets `HF_HOME=/model-cache`; mount a named volume at that path to persist model files.
+</script>
+<script type="text/markdown" data-id="api" data-title="HTTP API">
+# HTTP API
+
+The canonical machine-readable contract is [`openapi.yaml`](openapi.yaml). The running FastAPI app also generates Swagger UI at `/docs`, ReDoc at `/redoc`, and OpenAPI JSON at `/openapi.json`.
+
+Base URL for local development: `http://127.0.0.1:8000`.
+
+## `GET /api/health`
+
+Returns basic process/configuration status. `configured` only indicates whether `GROQ_API_KEY` is present; it does not verify that Groq accepts the key or that the embedding model can load.
+
+Example response:
+
+```json
+{"ok": true, "configured": true}
+```
+
+## `POST /api/chat`
+
+Retrieves relevant policy entries, then generates a grounded answer with Groq when relevant context is available.
+
+Request:
+
+```json
+{
+  "message": "How long can I borrow a book?",
+  "history": [
+    {"role": "user", "content": "I am a library member."},
+    {"role": "assistant", "content": "I can help with library policies."}
+  ]
+}
+```
+
+Constraints:
+
+- `message`: required string, 1–2000 characters.
+- `history`: optional array (defaults to `[]`), up to 12 messages.
+- Each history `role` must be `user` or `assistant`; `content` is limited to 2000 characters.
+- Only the most recent six history entries are included in the Groq prompt.
+
+Success response (`200`):
+
+```json
+{
+  "answer": "Books may be borrowed for the period stated in the applicable policy.",
+  "sources": ["Loan and renewal"]
+}
+```
+
+`answer` is plain text. `sources` contains the titles of retrieved policy entries. For a question with no policy above the similarity threshold, the app returns its fixed out-of-scope answer and an empty sources array without calling Groq.
+
+### Error responses
+
+| Status | Meaning |
+| --- | --- |
+| `422` | Request body does not satisfy the schema constraints. |
+| `500` | Knowledge base or retrieval configuration is invalid. |
+| `502` | Groq returned an HTTP error or could not be reached. Provider detail may be included in `detail`. |
+| `503` | Embedding model/dependency is unavailable or the Groq key is missing. |
+
+Error body format:
+
+```json
+{"detail": "Provider or application error description"}
+```
+
+### cURL example
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"How long can I borrow a book?","history":[]}'
+```
+
+For an executable API contract, use `docs/openapi.yaml` in Swagger Editor or import `http://127.0.0.1:8000/openapi.json` into an API client.
+</script>
+<script type="text/markdown" data-id="setup" data-title="Setup and deployment">
+# Setup and Deployment
+
+## Requirements
+
+- Python 3.10 or later for the documented local setup.
+- A Groq API key for answer generation when a relevant policy is retrieved.
+- Disk space and outbound internet access on first use to obtain the default embedding model, unless the model is already cached.
+- Docker Engine for container deployment.
+
+The default model `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` is public and does not need a Hugging Face token. `HF_TOKEN` is only relevant when switching to a private or gated Hugging Face model.
+
+## Local run
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+
+Set `GROQ_API_KEY` in `.env`; keep that file private. Then start the server:
+
+```bash
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload --env-file .env
+```
+
+Visit `http://127.0.0.1:8000`. Swagger UI is at `/docs`. The app lazily loads embeddings on the first in-scope chat request. To force the Hugging Face client to use an already downloaded cache, set `HF_HOME` to that cache location and `HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1` in the server environment.
+
+## Environment variables
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `GROQ_API_KEY` | unset | Server-side credential for Groq. Required for generated answers. |
+| `GROQ_MODEL` | `openai/gpt-oss-20b` | Model identifier sent to Groq Chat Completions. |
+| `EMBEDDING_MODEL` | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | Sentence Transformers model name or local path. |
+| `EMBEDDING_MIN_SIMILARITY` | `0.4` | Cosine similarity cutoff, inclusive, valid range `-1` to `1`. |
+| `HF_TOKEN` | unset | Optional token for gated/private Hugging Face models. Do not expose it to browser code. |
+| `HF_HOME` | Hugging Face default; `/model-cache` in Docker | Hugging Face model cache root. |
+| `PORT` | `8000` | Port used by the container command. |
+
+## Docker
+
+Build and run from the project root:
+
+```bash
+docker build -t library-assistant .
+docker run --rm --env-file .env -v library-model-cache:/model-cache -p 8000:8000 library-assistant
+```
+
+The image copies application code, web assets, and the policy JSON. `.env` is excluded from the Docker build context; Docker's `--env-file` reads it from the host at container startup. The named volume persists model downloads across container recreations. The first model download requires outbound access from the container.
+
+## Network dependencies
+
+- Browser Bootstrap and font assets load from CDNs.
+- Model files may be downloaded from Hugging Face on first use.
+- The backend sends generation requests to Groq.
+
+The application can serve its own page without the CDNs, but the page appearance may be degraded if they cannot load. Model caching avoids repeated Hugging Face downloads.
+</script>
+<script type="text/markdown" data-id="rag" data-title="Knowledge base and RAG">
+# RAG and Knowledge Base
+
+## Retrieval and generation
+
+The assistant uses retrieval-augmented generation (RAG):
+
+1. Load entries from `knowledge_base.json`.
+2. Construct embedding text from each entry's `title` and `text`.
+3. Encode policy text and the user question with the configured Sentence Transformers model. Vectors are normalized; cosine similarity is computed as their dot product.
+4. Keep up to three policies whose score is at least `EMBEDDING_MIN_SIMILARITY` (default `0.4`), in descending order.
+5. If policies were retrieved, send their text with the question and recent conversation context to Groq. The system prompt instructs the model to answer from the supplied policy context only.
+6. Return the answer and retrieved policy titles in `sources`.
+
+If no policy clears the threshold, the app returns a fixed answer that says the information is not available in the library policies; it does not call Groq for that request.
+
+## Knowledge base format
+
+`knowledge_base.json` is a JSON array. Each item must contain string fields `title` and `text`.
+
+```json
+[
+  {
+    "title": "Loan and renewal",
+    "text": "Describe the borrowing period, renewal conditions, and exceptions here."
+  }
+]
+```
+
+Keep each entry focused on one policy topic. Use clear language and include the actual rules, exceptions, and relevant terms users may mention. Do not put secrets or personal data in this file; its content is sent to the configured generation provider when retrieved.
+
+## Embedding cache behavior
+
+The embedding model instance is cached in-process. Corpus vectors are cached in process memory, keyed by the model name and the complete ordered `(title, text)` content. Editing policy content causes vectors to be recomputed on a later query. Restarting the server clears these in-memory vectors; downloaded model files persist in the configured Hugging Face cache.
+
+`EMBEDDING_MIN_SIMILARITY` must parse as a number between `-1` and `1`. Raising it makes retrieval stricter; lowering it admits more policy entries and may add irrelevant context. Evaluate paraphrases and out-of-scope questions when changing the threshold.
+
+## Model choice and credentials
+
+The default multilingual embedding model is public and does not require `HF_TOKEN`. A token does not grant access to Groq; `GROQ_API_KEY` is a separate credential. The app currently uses Groq for text generation and does not use the LoRA adapter from the educational notebook.
+</script>
+<script type="text/markdown" data-id="testing" data-title="Testing and security">
+# Testing, Troubleshooting, and Security
+
+## Integration tests
+
+Install the development dependencies and run:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest -q
+```
+
+The HTTP integration tests use deterministic fakes for embeddings and Groq. They verify routes and the API-to-assistant path without a live provider key or model download. They do not prove that a live Groq account accepts the configured credentials or that external networking is available.
+
+## Troubleshooting
+
+### Chat remains on “Searching policies…”
+
+The browser keeps the pending message while `/api/chat` is unresolved. Check the Uvicorn logs and Network panel for the request duration/status. The first request may load the model and encode the corpus. Later requests reuse in-process model and corpus-vector caches. Provider generation has a 45-second timeout in the current implementation; an error should be returned as HTTP 502. A 403 is a provider rejection, not a RAG retrieval result; inspect its provider error body and verify Groq account/key access and network policy. `GET /api/health` only checks that `GROQ_API_KEY` is present, not that it is valid.
+
+### Embedding model download or load fails
+
+Confirm outbound access to Hugging Face on first use, available disk space, and that `EMBEDDING_MODEL` is spelled correctly. If using offline mode, confirm the model snapshot exists under `HF_HOME`; otherwise the local model load will fail. Use `HF_TOKEN` only for gated/private models that require it.
+
+### Docker cannot access the model or provider
+
+Check that `.env` is supplied at runtime using `--env-file .env`, that the container has outbound network access when needed, and that a writable model cache volume is mounted at `/model-cache`. Do not copy `.env` into the image.
+
+### Page styling or fonts are missing
+
+The page uses CDN-hosted Bootstrap and fonts. Check browser access to the CDN or replace those references with locally hosted assets for an offline deployment.
+
+## Security notes
+
+- Keep `.env` out of Git and container build context. The repository `.gitignore` and `.dockerignore` exclude it.
+- Never paste API tokens into source code, documentation, browser JavaScript, screenshots, or issue trackers. If a token is exposed, revoke it and replace it in the local environment.
+- `GROQ_API_KEY` and optional `HF_TOKEN` are backend environment variables; the browser never needs them.
+- Retrieved knowledge-base passages and user prompts are sent to Groq for generation. Avoid storing sensitive or regulated data in the corpus unless that provider use is approved for the data.
+- `configured: true` from the health endpoint is not a credential validity check.
+
+## Current verification status
+
+The project includes an integration suite and the SDD progress log records implementation checks. Live provider access depends on the local Groq account, token, model availability, and network. A provider HTTP 403 must be resolved at that integration boundary; it is not fixed by `HF_TOKEN` because Hugging Face and Groq credentials serve separate services.
+</script>
+<script type="text/markdown" data-id="implementation" data-title="Implementation map">
+# Implementation Map
+
+| Path | Purpose |
+| --- | --- |
+| `app/main.py` | FastAPI application, static file mount, home page route, and router composition. |
+| `app/controllers/chat_controller.py` | `GET /api/health` and `POST /api/chat` endpoints. |
+| `app/models/schemas.py` | Pydantic request, conversation history, and response schemas. |
+| `app/models/assistant.py` | Knowledge loading, lazy embedding model loading, vector caching and ranking, prompt construction, Groq call, and error translation. |
+| `web/index.html` | Chat view and Bootstrap-based markup. |
+| `web/app.js` | Browser chat state, form submission, loading/error rendering, and API calls. |
+| `web/styles.css` | Futuristic visual theme and responsive presentation. |
+| `knowledge_base.json` | Library policy corpus used by retrieval. |
+| `tests/test_app_integration.py` | API integration coverage with mocked embedding and generation dependencies. |
+| `requirements.txt` | Runtime Python dependencies. |
+| `requirements-dev.txt` | Development/test dependencies. |
+| `Dockerfile` | Container image build and Uvicorn entry point. |
+| `.env.example` | Names and safe defaults for local configuration; contains no real secrets. |
+| `Copia_de_Hands_On_Pipeline.ipynb` | Educational pipeline reference; not loaded by the web app at runtime. |
+| `code/wip/20260924-biblioteca-chat-web/` | SDD feature specs, task plan, progress, and prior implementation notes. |
+
+## Request lifecycle ownership
+
+`web/app.js` calls the chat controller. The controller validates and routes through the schemas, then delegates to `answer_question` in the assistant model. That function loads policies, retrieves semantic matches, calls the provider if context exists, and returns an answer plus source titles. The controller serializes the result as `ChatResponse`.
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.min.js"></script>
+  <script>
+    (async function () {
+
+    const linkMap = {
+      "architecture.md": "#architecture",
+      "api.md": "#api",
+      "openapi.yaml": "openapi.yaml",
+      "setup-and-deployment.md": "#setup",
+      "rag-and-knowledge-base.md": "#rag",
+      "testing-and-troubleshooting.md": "#testing",
+      "implementation-map.md": "#implementation",
+      "../code/wip/20260924-biblioteca-chat-web/": "../code/wip/20260924-biblioteca-chat-web/"
+    };
+
+    marked.use({
+      gfm: true,
+      walkTokens(token) {
+        if (token.type === "link" && linkMap[token.href]) token.href = linkMap[token.href];
+      }
+    });
+
+    const diagrams = [];
+    const content = document.getElementById("content");
+    const nav = document.getElementById("nav");
+
+    for (const source of document.querySelectorAll('script[type="text/markdown"]')) {
+      const id = source.dataset.id;
+      const title = source.dataset.title;
+      const link = document.createElement("a");
+      link.href = "#" + id;
+      link.textContent = title;
+      nav.appendChild(link);
+
+      const markdown = source.textContent.replace(/```mermaid\n([\s\S]*?)```/g, (_, body) => {
+        const slot = diagrams.length;
+        diagrams.push(body.trim());
+        return `\n\n<div class="diagram" data-diagram="${slot}"></div>\n\n`;
+      });
+
+      const article = document.createElement("article");
+      article.id = id;
+      article.innerHTML = marked.parse(markdown);
+      content.appendChild(article);
+    }
+
+    for (const slot of document.querySelectorAll("[data-diagram]")) {
+      const node = document.createElement("pre");
+      node.className = "mermaid";
+      node.textContent = diagrams[Number(slot.dataset.diagram)];
+      slot.appendChild(node);
+    }
+
+    mermaid.initialize({ startOnLoad: false, theme: "neutral", securityLevel: "strict" });
+    await mermaid.run({ nodes: document.querySelectorAll(".mermaid") });
+
+    const links = [...nav.querySelectorAll("a")];
+    const sections = links.map((link) => document.querySelector(link.getAttribute("href")));
+    const markActive = () => {
+      let current = sections[0];
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top < 120) current = section;
+      }
+      for (const link of links) link.classList.toggle("active", link.getAttribute("href") === "#" + current.id);
+    };
+    document.addEventListener("scroll", markActive, { passive: true });
+    markActive();
+    })();
+  </script>
+</body>
+</html>
