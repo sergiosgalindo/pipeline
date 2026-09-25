@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.git
+.venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+.cache
+code/
+Copia_de_Hands_On_Pipeline.ipynb
+README.md
