@@ -8,6 +8,10 @@
     "text": "Las devoluciones tardías generan una multa de 10 pesos por cada día de retraso, hasta un máximo de 150 pesos por libro. La multa se paga en la caja de la biblioteca. Mientras exista un adeudo no se pueden solicitar préstamos nuevos ni renovaciones. Si el atraso supera 30 días, el material se considera no devuelto y, además de la multa máxima, se cobra el costo de reposición."
   },
   {
+    "title": "Atraso de un día y justificaciones",
+    "text": "Devolver un libro en el día 16 cuenta como un día de atraso, porque el préstamo máximo es de 15 días. Ese día genera una multa de 10 pesos. Un accidente, una enfermedad u otra razón personal del día anterior no suspende ni condona la multa: el reglamento no prevé excepciones. El libro debe devolverse igual y el adeudo se paga en caja. El personal de mostrador puede explicar el trámite, pero no puede anular la multa."
+  },
+  {
     "title": "Material de reserva",
     "text": "Los libros de la sección de reserva, que incluye material de examen, solo se consultan dentro de la biblioteca y no se prestan a domicilio. La consulta dura hasta 3 horas y se pueden pedir como máximo 2 piezas a la vez, dejando la credencial en el depósito. No está permitido fotocopiar ni fotografiar un examen completo. El material se devuelve en el mismo mostrador antes de salir de la sala."
   },

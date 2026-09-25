@@ -121,9 +121,12 @@ def test_chat_runs_embedding_retrieval_generation_and_returns_source(
     assert len(calls) == 1
     request, timeout = calls[0]
     assert request.get_header("Authorization") == "Bearer integration-test-key"
+    assert request.get_header("User-agent") == "library-assistant/1.0"
     assert timeout == 45
     sent_payload = json.loads(request.data.decode("utf-8"))
     assert sent_payload["messages"][-1]["content"].find("15 días") >= 0
+    assert sent_payload["max_completion_tokens"] == 512
+    assert sent_payload["reasoning_effort"] == "low"
 
 
 def test_out_of_scope_question_abstains_without_calling_groq(

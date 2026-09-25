@@ -164,17 +164,30 @@ def generate_answer(question: str, context_docs: list[dict[str, str]], history: 
     }]
     messages.extend({"role": item.role, "content": item.content} for item in history[-6:])
     messages.append({"role": "user", "content": f"CONTEXTO:\n{context}\n\nPREGUNTA:\n{question}"})
-    body = json.dumps({"model": MODEL, "messages": messages, "temperature": 0.2, "max_tokens": 250}).encode()
+    body = json.dumps({
+        "model": MODEL,
+        "messages": messages,
+        "temperature": 0.2,
+        "max_completion_tokens": 512,
+        "reasoning_effort": "low",
+    }).encode()
     request = urllib.request.Request(
         GROQ_URL,
         data=body,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "library-assistant/1.0",
+        },
         method="POST",
     )
     try:
         with urllib.request.urlopen(request, timeout=45) as response:
             data = json.loads(response.read())
-        return data["choices"][0]["message"]["content"].strip()
+        answer = (data["choices"][0]["message"].get("content") or "").strip()
+        if not answer:
+            return "No pude redactar la respuesta. Inténtalo de nuevo."
+        return answer
     except urllib.error.HTTPError as error:
         detail = error.read().decode("utf-8", errors="replace")
         raise AssistantError(502, f"Groq respondió con HTTP {error.code}: {detail[:400]}") from error

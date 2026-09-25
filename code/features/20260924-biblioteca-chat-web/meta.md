@@ -2,10 +2,10 @@
 
 - Feature: Library Web Assistant
 - Slug: 20260924-biblioteca-chat-web
-- Status: specs aligned with the current corpus and retrieval; runtime verification pending
+- Status: archived
 - Mode: brownfield
 - Created: 2026-09-24
-- Current phase: verification
+- Current phase: archived under code/features
 
 ## Source Request
 

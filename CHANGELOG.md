@@ -15,6 +15,11 @@ Change types: **Added**, **Changed**, **Fixed**, **Removed**.
 #### Fixed
 
 - The chat request now sends at most the latest 12 history messages, matching the API limit. Longer conversations stay on screen, and the oldest turns are left out of the next request.
+- Groq requests now send `User-Agent: library-assistant/1.0`. The default Python agent was rejected with HTTP 403.
+- Answers from `openai/gpt-oss-20b` no longer come back empty. The request uses low reasoning effort and a 512-token completion budget so the visible reply is not consumed by hidden reasoning.
+- A late return on day 16, including one explained by an accident, is now covered. The fine still applies; personal reasons do not waive it.
+- Desktop and mobile layouts were checked. The composer stays on screen, the conversation scrolls, and both keyboard and tap can send a message.
+- The Docker image builds and runs with the API key supplied at runtime. The container serves the chat page and reports health as configured.
 - `docs/index.html`, a single page that renders the project guides and the Mermaid architecture diagrams.
 
 #### Changed

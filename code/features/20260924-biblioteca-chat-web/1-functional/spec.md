@@ -1,6 +1,6 @@
 # Functional Specification
 
-Status: aligned with the current 26-policy corpus and embedding retrieval
+Status: aligned with the current 27-policy corpus and embedding retrieval
 
 ## Problem
 

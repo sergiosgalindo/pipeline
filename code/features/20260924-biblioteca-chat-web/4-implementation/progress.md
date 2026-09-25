@@ -1,6 +1,6 @@
 # Implementation Progress
 
-Status: multilingual embedding retrieval implemented and evaluated with the configured model; provider and browser verification pending
+Status: all planned tasks complete, including live API, browser, and container checks
 
 ## Completed
 
@@ -20,12 +20,13 @@ Status: multilingual embedding retrieval implemented and evaluated with the conf
 - Policy titles are included in embeddings to improve retrieval for named policy topics.
 - The configured multilingual model weights are downloaded to the ignored `.cache/huggingface` directory; no Hugging Face token was required.
 - TASK-007 passes with the real model: five Spanish paraphrases retrieve their expected policy and an out-of-corpus question is declined.
+- TASK-005: Uvicorn served `/` and `/api/health` with HTTP 200. `/api/chat` returned HTTP 200 and policy sources after the Groq request identified itself with `User-Agent: library-assistant/1.0`.
+- TASK-006: desktop 1280×800 and mobile 390×844 renders are saved under `4-implementation/artifacts/`. Neither viewport overflows horizontally. The composer stays visible, the message list scrolls, Enter submits on desktop, and tapping a prompt card submits on mobile. The mobile reset control is visible and the sidebar is hidden.
+- TASK-009: `docker build -t library-assistant .` succeeded. The container was started with `--env-file .env` on host port 8002. `GET /` returned 200 with the chat page, and `GET /api/health` returned 200 with `configured: true`.
 
 ## In Progress
 
-- TASK-005 live provider response remains unverified because Groq previously returned HTTP 403.
-- TASK-006 browser rendering and interactive desktop/mobile checks remain pending.
-- TASK-009 container build/runtime verification remains pending.
+- None. All planned tasks are complete.
 
 ## Blocked
 
@@ -40,4 +41,5 @@ Status: multilingual embedding retrieval implemented and evaluated with the conf
 - `PYTHONPYCACHEPREFIX=/tmp/pipeline_pycache .venv/bin/python -m py_compile ...` — passed for the application and integration-test modules.
 - `git diff --check` — passed.
 - Offline evaluation with the cached Sentence Transformer — passed for paraphrases about loans, late returns, and reserve books; an unrelated Mars-weather question returned no sources.
-- Live provider response and real-browser UI checks remain pending.
+- Live Uvicorn check on port 8001: `GET /` 200, `GET /api/health` 200 with `configured: true`, and `POST /api/chat` 200 with sources. A loan paraphrase retrieved `Préstamo y renovación`.
+- Desktop and mobile layout checks passed. Screenshots: `desktop-1280x800.png`, `desktop-after-enter.png`, `mobile-390x844.png`, `mobile-after-tap.png`.

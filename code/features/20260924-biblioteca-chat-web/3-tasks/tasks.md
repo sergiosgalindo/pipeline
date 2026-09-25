@@ -1,6 +1,6 @@
 # Development Plan
 
-Status: specs aligned with the 26-policy corpus and title-plus-text embeddings; provider-backed and browser verification pending
+Status: all tasks complete
 
 This plan was written in brownfield mode after the first version had been built. Completed tasks describe what is already present in the working tree; pending tasks are work that remains unverified or unimplemented.
 
@@ -22,11 +22,11 @@ This plan was written in brownfield mode after the first version had been built.
   - Depends on: TASK-001, TASK-002, TASK-003
   - Deliverable: `requirements.txt`, README, and SDD package with specifications, tasks, progress, and implementation map.
   - Validate: installation and startup instructions documented.
-- [ ] TASK-005: Install dependencies and verify startup/API contracts.
+- [x] TASK-005: Install dependencies and verify startup/API contracts.
   - Depends on: TASK-004
   - Deliverable: run Uvicorn and check `/`, `/api/health`, and `/api/chat` with a valid key.
   - Validate: expected HTTP responses and a demo query returns a source.
-- [ ] TASK-006: Inspect the interface on desktop and mobile viewports.
+- [x] TASK-006: Inspect the interface on desktop and mobile viewports.
   - Depends on: TASK-005
   - Deliverable: render evidence and review of overflow, composer, and scrolling.
   - Validate: both viewport sizes work, and chat can be used with keyboard and touch.
@@ -38,7 +38,7 @@ This plan was written in brownfield mode after the first version had been built.
   - Depends on: TASK-003
   - Deliverable: send no more than the latest 12 history messages from `web/app.js`, matching `ChatRequest` validation.
   - Validate: continue a conversation past seven exchanges; requests remain accepted and the newest context is retained.
-- [ ] TASK-009: Package the web app as a Docker container.
+- [x] TASK-009: Package the web app as a Docker container.
   - Depends on: TASK-001, TASK-002, TASK-003
   - Deliverable: root `Dockerfile`, `.dockerignore`, and English run instructions using runtime environment configuration.
   - Validate: build the image, run it with `.env` supplied at runtime, and check the root and health endpoints.
