@@ -37,4 +37,4 @@ Change types: **Added**, **Changed**, **Fixed**, **Removed**.
 - Routes `GET /`, `GET /api/health`, and `POST /api/chat`.
 - Container packaging with `Dockerfile` and sample environment variables in `.env.example`.
 - Integration tests in `tests/test_app_integration.py`.
-- Documentation in `docs/` and specifications in `code/wip/20260924-biblioteca-chat-web/`.
+- Documentation in `docs/` and specifications in `code/features/20260924-biblioteca-chat-web/`.

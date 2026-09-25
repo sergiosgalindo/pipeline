@@ -26,4 +26,4 @@ The current web app uses RAG and Groq generation. It does not load or serve the 
 
 ## SDD records
 
-The feature workspace contains the functional and technical specifications, task plan, progress, and implementation map: [`code/wip/20260924-biblioteca-chat-web/`](../code/wip/20260924-biblioteca-chat-web/).
+The archived feature contains the functional and technical specifications, task plan, progress, and implementation map: [`code/features/20260924-biblioteca-chat-web/`](../code/features/20260924-biblioteca-chat-web/).

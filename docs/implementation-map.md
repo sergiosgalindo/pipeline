@@ -16,7 +16,7 @@
 | `Dockerfile` | Container image build and Uvicorn entry point. |
 | `.env.example` | Names and safe defaults for local configuration; contains no real secrets. |
 | `Copia_de_Hands_On_Pipeline.ipynb` | Educational pipeline reference; not loaded by the web app at runtime. |
-| `code/wip/20260924-biblioteca-chat-web/` | SDD feature specs, task plan, progress, and prior implementation notes. |
+| `code/features/20260924-biblioteca-chat-web/` | Archived SDD feature specs, task plan, progress, and implementation notes. |
 
 ## Request lifecycle ownership
 
